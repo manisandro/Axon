@@ -1,0 +1,44 @@
+_BV(bitNumber) => 1 << bitNumber: bit number to bit mask
+sbi(port, bitNumber) => port |= _BV(bitNumber): set bit number in port
+cbi(port, bitNumber) => port &= ~_BV(bitNumber): clear bit number in port 
+sei(): set interrupt flag (enable interrupts)
+cli(): clear interrupt flag (disable interrupts)
+
+bit_is_set(sfr, bit) (_SFR_BYTE(sfr) & _BV(bit))
+
+bit set = high
+bit clear = low
+
+SFR: special function register
+
+ISR(INTERRUPT_VECTOR_HANDLER){
+	// Body
+}
+
+SIGNAL vs INTERRUPT vs ISR
+- ISR is identical to SIGNAL (but SIGNAL is deprecated)
+- SIGNAL disables global interrupts while processing the handler
+- INTERRUPT enables global interrupts while processing the handler (i.e., it may be interrupted)
+
+memory types:
+- sram: storage for volatile, runtime data (default)
+- flash: storage for read-only data (program space)
+	* declare with PROGMEM (PROGMEM const uint16_t name;)
+	* #include <avr/pgmspace.h>
+	* pgm_read_{byte/word/block}
+	* pgm_write_{byte/word/block}
+- eeprom: storage for non-volatile, runtime data (
+	* declare with EEMEM (EMEM uint16_t name = value; )
+	* #include <avr/eeprom.h>
+	* eeprom_read_{byte/word/block}
+	* eeprom_write_{byte/word/block}
+
+DDRx:
+- Data Direction Register
+- Configure pins: DDRx = 0b11110000 (pins 0-3 of port x are input (=0), pins 4-7 of port x are output (=1))
+PORTx: write register values of port x (write 8 bits)
+- PORTx = 0b00000000
+- sbi(PORTG, 5) -> set bit G5
+PINx: read register values of port x (read 8 bits)
+- uint8_t r = PINx
+- bit_is_clear(PING, 5);
